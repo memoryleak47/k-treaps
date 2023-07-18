@@ -55,15 +55,7 @@ def annotate_treap(k, treap):
     for f in fwd(bunch):
         annotate_treap(k, f)
 
-def treap_depth(treap):
-    if treap == None:
-        return 0
-
-    l = treap_depth(treap["children"][0])
-    r = treap_depth(treap["children"][1])
-    return max(l, r) + 1
-
-def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, parent, ax):
+def render_ktreap_rec(ktreap, x, depth, parent_pos, parent, ax):
     if ktreap == None:
         return
 
@@ -83,16 +75,15 @@ def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, parent, ax):
             lw=4
         plt.arrow(parent_pos[0], parent_pos[1], x-parent_pos[0], -depth-parent_pos[1], color=shared_color, head_width=0, head_length=0, length_includes_head=True, lw=lw)
 
-    delta = 2 ** (max_depth - depth)
-    render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, max_depth, [x, -depth], ktreap, ax)
-    render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, max_depth, [x, -depth], ktreap, ax)
+    delta = 2 ** -depth
+    render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, [x, -depth], ktreap, ax)
+    render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, [x, -depth], ktreap, ax)
 
 def render_ktreap(ktreap):
     fig, ax = plt.subplots(1, 1, figsize=(6,6))
     ax.set_axis_off()
 
-    max_depth = treap_depth(ktreap)
-    render_ktreap_rec(ktreap, 0, 0, max_depth, None, ktreap, ax)
+    render_ktreap_rec(ktreap, 0, 0, None, ktreap, ax)
 
 def render(k, data):
     treap = create_treap(data)

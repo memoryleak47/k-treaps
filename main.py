@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # [(Key, Priority)]
-DATA = [(10, 10), (20, 20), (30, 30), (5, 70), (300, 2), (202, 24), (201, 23)]
+DATA = [(10, 10), (20, 20), (30, 30), (5, 70), (300, 2), (202, 24), (201, 23), (203, 200)]
 
 # node = {"tuple": (_, _), "children": [_, _], "color"}
 # bunch = [node, node, node, ...]
@@ -71,13 +71,14 @@ def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, ax):
     if "color" in ktreap:
         color = ktreap["color"]
 
-    ax.scatter([x], [-depth], color=color)
-    ax.text(x, -depth, str(ktreap["tuple"]), color=color)
+    # this does nothing except correcting the viewport
+    ax.scatter([x], [-depth], color=color, alpha=0)
+    ax.text(x, -depth, str(ktreap["tuple"]), color="white", horizontalalignment='center', backgroundcolor=color)
 
     if parent_pos:
         plt.arrow(parent_pos[0], parent_pos[1], x-parent_pos[0], -depth-parent_pos[1])
 
-    delta = 2 ** (max_depth - depth)
+    delta = 2 ** (max_depth - depth - 1)
     render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, max_depth, [x, -depth], ax)
     render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, max_depth, [x, -depth], ax)
 

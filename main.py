@@ -83,7 +83,7 @@ def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, parent, ax):
             lw=4
         plt.arrow(parent_pos[0], parent_pos[1], x-parent_pos[0], -depth-parent_pos[1], color=shared_color, head_width=0, head_length=0, length_includes_head=True, lw=lw)
 
-    delta = 2 ** (max_depth - depth - 1)
+    delta = 2 ** (max_depth - depth)
     render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, max_depth, [x, -depth], ktreap, ax)
     render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, max_depth, [x, -depth], ktreap, ax)
 
@@ -100,14 +100,13 @@ def render(k, data):
     render_ktreap(treap)
 
 MAX = 20
-L = np.arange(MAX)
-R = np.arange(MAX); random.shuffle(R)
+L = np.arange(MAX); random.shuffle(L)
+R = np.arange(MAX)
 data = list(np.stack([L, R]).T)
-random.shuffle(data)
 
 render(3, data)
 
-data.pop()
+data.pop() # removes highest prio element.
 render(3, data)
 
 plt.show()

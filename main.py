@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 DATA = [(10, 10), (20, 20), (30, 30), (5, 70), (300, 2), (202, 24), (201, 23)]
 
 # node = {"tuple": (_, _), "children": [_, _], "color"}
+# bunch = [node, node, node, ...]
+
+def get_color(bunch):
+    s = 0
+    for n in bunch:
+        s += hash(n["tuple"])
+
+    s = abs(hash(s)) // 1
+
+    r = s % 200 / 256; s = s // 256
+    g = s % 200 / 256; s = s // 256
+    b = s % 200 / 256; s = s // 256
+
+    return (r, g, b)
 
 def create_treap(data):
     if len(data) == 0:
@@ -16,9 +30,30 @@ def create_treap(data):
     r_treap = create_treap(data_r)
     return {"tuple": (key, prio), "children": [l_treap, r_treap]}
 
+# returns the list of nodes that lie forward of a bunch
+def fwd(bunch):
+    candidates = []
+    for x in bunch:
+        candidates.append(x["children"][0])
+        candidates.append(x["children"][1])
+    return list(filter(lambda x: (x is not None) and (x not in bunch), candidates))
+
 # annotates a treap with colors to express k-bunches
-def treap_to_ktreap(k, treap):
-    return treap # TODO
+def annotate_treap(k, treap):
+    bunch = [treap]
+    while len(bunch) < k:
+        candidates = fwd(bunch)
+        if len(candidates) == 0:
+            break
+        best = sorted(candidates, key=lambda x: x["tuple"][1])[-1]
+        bunch.append(best)
+
+    col = get_color(bunch)
+    for b in bunch:
+        b["color"] = col
+
+    for f in fwd(bunch):
+        annotate_treap(k, f)
 
 def treap_depth(treap):
     if treap == None:
@@ -57,7 +92,7 @@ def render_ktreap(ktreap):
 
 def render(k, data):
     treap = create_treap(data)
-    ktreap = treap_to_ktreap(k, treap)
-    render_ktreap(ktreap)
+    annotate_treap(k, treap)
+    render_ktreap(treap)
 
 render(3, DATA)

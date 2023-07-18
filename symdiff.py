@@ -2,14 +2,15 @@
 
 from ktreap import *
 
-MAX = 20
+MAX = 10000
 L = np.arange(MAX); random.shuffle(L)
 R = np.arange(MAX)
 data = list(np.stack([L, R]).T)
 
-render(3, data)
+bunches1 = bunches(3, data)
 
 data.pop() # removes highest prio element.
-render(3, data)
+bunches2 = bunches(3, data)
 
-plt.show()
+print(len(bunches1), len(bunches2), len(bunches1 ^ bunches2))
+

@@ -63,7 +63,7 @@ def treap_depth(treap):
     r = treap_depth(treap["children"][1])
     return max(l, r) + 1
 
-def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, ax):
+def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, parent, ax):
     if ktreap == None:
         return
 
@@ -76,18 +76,23 @@ def render_ktreap_rec(ktreap, x, depth, max_depth, parent_pos, ax):
     ax.text(x, -depth, str(ktreap["tuple"]), color="white", horizontalalignment='center', backgroundcolor=color)
 
     if parent_pos:
-        plt.arrow(parent_pos[0], parent_pos[1], x-parent_pos[0], -depth-parent_pos[1])
+        shared_color = "black"
+        lw=1
+        if color == parent["color"]:
+            shared_color = color
+            lw=4
+        plt.arrow(parent_pos[0], parent_pos[1], x-parent_pos[0], -depth-parent_pos[1], color=shared_color, head_width=0, head_length=0, length_includes_head=True, lw=lw)
 
     delta = 2 ** (max_depth - depth - 1)
-    render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, max_depth, [x, -depth], ax)
-    render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, max_depth, [x, -depth], ax)
+    render_ktreap_rec(ktreap["children"][0], x-delta, depth+1, max_depth, [x, -depth], ktreap, ax)
+    render_ktreap_rec(ktreap["children"][1], x+delta, depth+1, max_depth, [x, -depth], ktreap, ax)
 
 def render_ktreap(ktreap):
     fig, ax = plt.subplots(1, 1, figsize=(6,6))
     ax.set_axis_off()
 
     max_depth = treap_depth(ktreap)
-    render_ktreap_rec(ktreap, 0, 0, max_depth, None, ax)
+    render_ktreap_rec(ktreap, 0, 0, max_depth, None, ktreap, ax)
 
     plt.show()
 

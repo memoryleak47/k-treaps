@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import random
 
-# [(Key, Priority)]
-DATA = [(10, 10), (20, 20), (30, 30), (5, 70), (300, 2), (202, 24), (201, 23), (203, 200)]
-
+# data = [(Key, Priority)]
 # node = {"tuple": (_, _), "children": [_, _], "color"}
 # bunch = [node, node, node, ...]
 
@@ -94,11 +94,20 @@ def render_ktreap(ktreap):
     max_depth = treap_depth(ktreap)
     render_ktreap_rec(ktreap, 0, 0, max_depth, None, ktreap, ax)
 
-    plt.show()
-
 def render(k, data):
     treap = create_treap(data)
     annotate_treap(k, treap)
     render_ktreap(treap)
 
-render(3, DATA)
+MAX = 20
+L = np.arange(MAX)
+R = np.arange(MAX); random.shuffle(R)
+data = list(np.stack([L, R]).T)
+random.shuffle(data)
+
+render(3, data)
+
+data.pop()
+render(3, data)
+
+plt.show()

@@ -12,13 +12,13 @@ def val(MAX):
     data.pop() # removes highest prio element.
     bunches2 = bunches(3, data)
 
-    return (len(bunches1), len(bunches2), len(bunches1 ^ bunches2))
+    return len(bunches2 - bunches1)
 
 ITERS = 100
-for x in [10, 100, 1000, 10000]:
+for x in [10, 50, 100, 500, 1000, 5000, 10000]:
     s = 0
     for _ in range(ITERS):
-        s += val(x)[2]
-    s /= ITERS
-    print("{} -> {}".format(x, int(s)))
+        s = max(s, val(x))
+    c = s / np.log(x)
+    print("Removing the top-prio (key, prio)-pair from a random 3-ktreap with {} nodes requires {} new 3-tuples. This is equivalent to np.log({}) * {}".format(x, s, x, c))
 
